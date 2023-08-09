@@ -1,8 +1,23 @@
-title: Just the Docs Template
-description: A starter template for a Jeykll site using the Just the Docs theme!
+title: TERABYTE
+description: 테라의 각종 저장소
 theme: just-the-docs
 
-url: https://just-the-docs.github.io
-
+url: https://ne-eun.github.io
 aux_links:
-  Template Repository: https://github.com/just-the-docs/just-the-docs-template
+  TERA's Repository: https://github.com/ne-eun
+
+callouts:
+  highlight:
+    color: purple
+  important:
+    title: Important
+    color: blue
+  new:
+    title: New
+    color: green
+  note:
+    title: Note
+    color: yellow
+  warning:
+    title: Warning
+    color: red

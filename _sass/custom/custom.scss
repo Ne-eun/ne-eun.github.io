@@ -1,0 +1,12 @@
+
+.main-content {
+	h1, h2, h3, h4 {
+		font-weight: 500;
+	}
+	ol {
+		&> li::before {
+			top: 0;
+			color: $purple-000
+		}
+	}
+}
