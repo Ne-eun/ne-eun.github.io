@@ -1,24 +1,42 @@
-![header](https://capsule-render.vercel.app/api?type=transparent&fontColor=703ee5&height=200&section=header&text=TERA&desc=Park-Ne-eun&descAlign=56&fontSize=90&animation=twinkling)
+# Ruby & Jekyll 환경 설정 메모
 
-<div align="center">
-  <img src="https://img.shields.io/badge/-React-%2361DAFB?style=flat-square&logo=React&logoColor=2361DAFB&labelColor=282828" />
-  <img src="https://img.shields.io/badge/-JavaScript-%23F7DF1E?style=flat-square&logo=Javascript&logoColor=2361DAFB&labelColor=282828" />  
-  <img src="https://img.shields.io/badge/-TypeScript-%233178C6?style=flat-square&logo=TypeScript&logoColor=2361DAFB&labelColor=282828" />
-  <img src="https://img.shields.io/badge/-HTML5-%23E34F26?style=flat-square&logo=HTML5&logoColor=2361DAFB&labelColor=282828" />
-  <img src="https://img.shields.io/badge/-CSS3-%231572B6?style=flat-square&logo=CSS3&logoColor=2361DAFB&labelColor=282828" />
-  <img src="https://img.shields.io/badge/-SCSS-%23CC6699?style=flat-square&logo=Sass&logoColor=2361DAFB&labelColor=282828" />
-</div>
+## 1. Gem 권한 에러 해결
+시스템 루비 사용 시 발생하는 권한 에러(`write permissions`) 해결을 위해 `rbenv` 사용을 권장합니다. (sudo 사용 금지)
 
-<div align="center">
-  <p></p>
-  <img src="https://github-readme-stats.vercel.app/api/top-langs?username=Ne-eun&layout=compact&show_icons=true&theme=shades-of-purple" />
-</div>
-<!-- [![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=Ne-eun&layout=compact)](https://github.com/anuraghazra/github-readme-stats) -->
+### rbenv 설치 및 루비 설정
+```bash
+brew update
+brew install rbenv ruby-build
 
-*** 
-<div align="center">
-  <p></p>
-  <a align="center" href="https://teraaa.notion.site/TERA-4dc2b379f7e749599c159758313e718d">
-    <img src="https://img.shields.io/badge/이력서-Resume-%23C61C3E?style=for-the-badge&logo=Read the Docs&logoColor=2361DAFB&labelColor=282828" />
-  </a>
-</div>
+# 설치 가능 버전 확인 및 설치
+rbenv install -l
+rbenv install 4.0.0
+rbenv global 4.0.0
+```
+
+## 2. 셸 환경 설정 (.zshrc)
+```bash
+echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.zshrc
+echo 'eval "$(rbenv init -)"' >> ~/.zshrc
+source ~/.zshrc
+
+# 설정 확인 (경로에 .rbenv/shims 포함 확인)
+which ruby
+```
+
+## 3. Ruby 상위 버전 라이브러리 에러
+Ruby 3.4+ 버전에서 `ostruct` 등 기본 라이브러리가 제외되어 발생하는 에러 해결 방법입니다.
+
+### 해결 방법
+`Gemfile`에 누락된 라이브러리를 명시적으로 추가 후 설치합니다.
+```ruby
+gem "ostruct"
+```
+```bash
+bundle install
+```
+
+## 4. 로컬 실행 방법
+```bash
+bundle exec jekyll serve
+```
