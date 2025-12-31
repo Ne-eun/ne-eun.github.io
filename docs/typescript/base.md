@@ -1,201 +1,95 @@
 ---
 layout: default
-title: 기본
+title: Basic
 parent: Typescript
 nav_order: 1
 ---
 
-# Base (기본적인 내용)
-
+# Typescript 기본
 {: .no_toc}
 
+타입스크립트의 핵심 개념과 주요 보조 타입들을 정리합니다.
+
 <details open markdown="block">
-  <summary>
-    Table of contents
-  </summary>
+  <summary>Table of contents</summary>
   {: .text-delta }
 - TOC
 {:toc}
 </details>
 
-## interface와 type의 차이
-
-interface는 구현제의 규격사항을 정의한다.  
-type은 데이터의 타입을 정의할 때 사용한다.  
-해당 class/function은 인터페이스에 정의된 내용을 모두 구현해야한다.  
-요즘의 타입스크립트는 둘의 차이가 거의 없고 모두 구현체를 구현할 수 있다.
-
 ---
 
-## 인터페이스의 확장
+## 1. interface vs type
+- **`interface`**: 주로 객체의 규격(구조)을 정의할 때 사용하며, 선언 병합이 가능합니다.
+- **`type`**: 데이터의 타입을 정의하거나 유니온, 인터섹션 등 복잡한 타입을 조합할 때 유용합니다.
+- 최근 버전에서는 두 방식 모두 대부분의 기능을 상호 지원하므로 프로젝트 컨벤션에 따라 선택합니다.
 
-```ts
-interface Position2D {
-  x: number;
-  y: number;
-}
+### 상속과 확장
+```typescript
+// interface 확장
+interface Position2D { x: number; y: number; }
+interface Position3D extends Position2D { z: number; }
 
-interface Position3D extends Position2D {
-  z: number;
-}
-
-const position: Position3D = {
-  x: 1,
-  y: 2,
-  z: 3,
-};
-```
-
-## type의 확장
-
-```ts
-type Position2D = {
-  x: number;
-  y: number;
-};
-
-type Position3D = Position2D & {
-  z: number;
-};
-
-const position: Position3D = {
-  x: 1,
-  y: 2,
-  z: 3,
-};
+// type 확장 (Intersection)
+type TPosition2D = { x: number; y: number; };
+type TPosition3D = TPosition2D & { z: number; };
 ```
 
 ---
 
-## key를 사용한 타입
+## 2. 유용한 타입 기능
 
-타입을 자바스크립트의 object처럼 key를 사용하여 value를 받아 올 수 있다.
-
-```ts
-type Animal = {
-  name: string;
-  age: number;
-  gender: "male" | "female";
-};
-
+### 인덱스 접근 타입 (Indexed Access Types)
+객체의 특정 키 값을 사용하여 타입을 추출할 수 있습니다.
+```typescript
+type Animal = { name: string; age: number; };
 type Name = Animal["name"]; // string
-type errorName = Animal.gender // error: 점표기법은 사용할 수 없음
-const text: Name = "hello";
 ```
 
----
-
-## 유니온과 인터섹션
-
-```ts
-type a = string & number; // and
-type B = string | number; // or
-```
+### 유니온(`|`)과 인터섹션(`&`)
+- **Union (`|`)**: 여러 타입 중 하나일 수 있음을 의미 (OR)
+- **Intersection (`&`)**: 여러 타입을 하나로 합침 (AND)
 
 ---
 
-## 자바스크립트 타입과 다른점
+## 3. 특수 타입들
 
-### any
-
-모든 타입을 수용한다.
-~~사용금지~~
-
----
-
-### unknown
-
-어떤 타입이 올지 알 수 없을 때 any대신 사용하고, 타입을 검사해 정제할 수 있다.
-
-```ts
+### `unknown`
+무엇이든 올 수 있지만, 사용하기 전에 타입을 반드시 확인(Type Guard)해야 하는 안전한 타입입니다. (`any` 대신 사용 권장)
+```typescript
 let a: unknown = 30;
-let b = a === 123;
-let c = a + 3; // 에러
 if (typeof a === "number") {
-  let d = a + 10; // 에러나지않음
+  let d = a + 10; // 안전하게 작업 가능
 }
 ```
 
----
+### `void` & `never`
+- **`void`**: 리턴값이 없는 함수 등에 사용합니다.
+- **`never`**: 에러를 던지거나 무한 루프 등, 절대 결과값을 리턴하지 않는 경우에 사용합니다.
 
-### Object
+### `Readonly`
+요소를 수정할 수 없도록 제한합니다.
+```typescript
+const arr: readonly number[] = [1, 2, 3];
+// arr.push(4); // Error
+```
 
-어떤 필드가 있는지는 관심없고 오로지 객체인지 확인할때 사용한다.
-
-```ts
-const a: Object = {
-  x: 1,
-  y: 2,
-};
-const b: typeof a = {}; // 에러가 발생하지 않음
+### `Tuple`
+배열의 각 요소의 타입과 길이를 고정하여 정의합니다.
+```typescript
+type Point = [number, number];
+const p: Point = [10, 20];
 ```
 
 ---
 
-### void
+## 4. enum 보다는 Union 타입을 권장하는 이유
+`enum`은 타입스크립트가 자바스크립트로 변환될 때 별도의 객체를 생성하며, 예기치 않은 숫자 할당이 가능할 수 있는 등 몇 가지 단점이 있습니다. 가능한 한 **Union 타입**을 활용하는 것이 번들 사이즈와 타입 안정성 측면에서 유리합니다.
 
-함수를 실행하고 리턴값이 없을 때 사용하는 타입
+```typescript
+// enum 예시
+enum Days { Monday, Tuesday }
 
-```ts
-function print(): void {
-  console.log("hello");
-  return;
-}
+// Union 타입 권장 (더 가볍고 안전함)
+type DaysOfWeek = "Monday" | "Tuesday";
 ```
-
----
-
-### never
-
-error가 발생하거나, 무한 루프를 도는 함수일경우 아무런것도 리턴하지 않을 때 사용하는 타입
-
----
-
-### Readonly
-
-```ts
-const a: readonly number[] = [1, 2, 3];
-const b: ReadonlyArray<number> = [3, 4, 5];
-a.pop(); // error
-b.pop(); // error
-```
-
-읽기 전용 데이터를 생성할 수 있다.
-
----
-
-### Tuple
-
-```ts
-type A = [string, number];
-const b: A = [3, 4]; //error
-const c: A = ["1", 2];
-```
-
-array의 서브 타입으로 길이와 타입을 정의할 수 있다.
-
----
-
-### enum
-
-시작하는 값이 number이면 순차적으로 1씩 늘어나고, string으로 지정할 경우 모두 type을 지정해 주어야 한다.  
-다른 언어에서는 유용하게 사용하지만, typesciprt에서는 union타입으로 대부분 대체가 가능하다.  
-가능 하면 union타입으로 사용하고, 다른 디바이스에 전송해야하는 json경우에서만 주로 사용한다.
-
-```ts
-type DaysOfWeek = "Monday" | "Tuesday" | "Wednesday";
-enum Days {
-  Monday,
-  Tuesday,
-  Wednesday,
-  Thursday,
-  Friday,
-  Saturday,
-  Sunday,
-}
-
-let day: Days = Days.Saturday;
-day = 10; // 6이상의 숫자도 할당이 가능함
-```
-
-enum을 union으로 대체해서 사용하는 이유는 enum에 다른 값을 할당 할 수 있기 때문이다.

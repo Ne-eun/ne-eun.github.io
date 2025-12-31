@@ -6,68 +6,54 @@ nav_order: 1
 ---
 
 # Variable (변수)
-javascript의 변수는 기본적으로 호이스팅(hoisting)이 된다.  
-var는 호이스팅을 허용하는 반면 const/let은 TDZ때문에 허용되지않는다.
 
-- 선언 (Declaration): 스코프와 변수 객체가 생성되고 스코프가 변수 객체를 참조한다.
-- 초기화(Initalization): 변수 객체가 가질 값을 위해 메모리에 공간을 할당한다. 이때 초기화 되는 값은 undefined이다.
-- 할당 (Assignment): 해당 변수가 가리키는 주소의 공간에 데이터를 저장한다.
+자바스크립트의 변수는 기본적으로 **호이스팅(Hoisting)**이 발생합니다. `var`는 호이스팅 시 초기화까지 이루어지는 반면, `let`과 `const`는 TDZ(Temporal Dead Zone)로 인해 초기화 전 접근이 제한됩니다.
+
+## 1. 변수의 생명주기
+1. **선언 (Declaration)**: 스코프와 변수 객체가 생성되고 스코프가 변수 객체를 참조합니다.
+2. **초기화 (Initialization)**: 변수 값을 저장하기 위한 메모리 공간을 할당합니다. 이 단계에서 변수는 `undefined`로 초기화됩니다.
+3. **할당 (Assignment)**: 변수에 실제 데이터를 저장합니다.
 
 ---
 
-## Hoisting (호이스팅)
-변수의 선언과 초기화를 분리한 후, 선언만 코드의 최상단으로 옮기는 것으로  
-변수를 정의하는 코드보다 사용하는 코드가 앞서 등잘 할 수 있다.  
-인터프리터가 코드를 해석할 때 변수 및 함수의 선언처리와 실제 코드 실행을 두단계로 나눠서 처리 하기때문에 발생한다.  
-var로 선언한 변수의 경우 호이스팅 시 (undefined)로 변수를 초기화 한다.  
-반면 let과 const로 선언한 변수의 경우 호이스팅 시 변수를 초기화 하지 않는다.
-```js
-/* --- 호이스팅 --- */
-  console.log("hoisting", myName); // undefined
-  var myName = "ne-eun";
+## 2. Hoisting (호이스팅)
+변수의 선언부를 코드의 최상단으로 끌어올리는 것처럼 동작하는 현상입니다. 인터프리터가 코드를 해석할 때 선언 단계와 실행 단계를 나누어 처리하기 때문에 발생합니다.
 
-  // console.log(name2); // error: Uncaught ReferenceError: Cannot access 'name' before initialization
-  let name2 = "Evan";
+- **`var`**: 선언과 동시에 `undefined`로 초기화됩니다. 선언 전에도 접근이 가능하지만 값은 `undefined`입니다.
+- **`let`, `const`**: 선언은 되지만 초기화는 되지 않습니다. 선언문 이전에 접근하려고 하면 참조 에러가 발생합니다.
 
-  /* --- var 스코프 --- */
-  function test() {
-    var a = "123";
-  }
-  var b = "ass";
-  // console.log("scope", a); // error: a is not defined
-  if (true) {
-    var b = "123";
-    console.log("scope", b); // 123
-  }
-  console.log("scope", b); //123
+```javascript
+/* --- 호이스팅 예시 --- */
+console.log(myName); // undefined
+var myName = "ne-eun";
 
-  /* --- 블록 호이스팅 --- */
-  let name = "ne-eun park";
-  if (name === "ne-eun park") {
-    // console.log(name); // error: Uncaught ReferenceError: Cannot access 'name' before initialization
-    let name = "terabyte";
-    console.log(name); // terabyte
-  }
+// console.log(name2); // ReferenceError
+let name2 = "Evan";
+
+/* --- 블록 레벨 호이스팅 --- */
+let name = "ne-eun park";
+if (name === "ne-eun park") {
+  // console.log(name); // ReferenceError (TDZ 영향)
+  let name = "terabyte";
+  console.log(name); // "terabyte"
+}
 ```
 
-## Temporal Dead Zone (임시로 죽어있는 공간)
-var의 경우(v8엔진)kVar모드로 변수 객체를 생성한 후 바로 AllocateTo메소드를 통해 메모리에 공간을 할당한다.  
-그러나 const와 let의 경우 kLet,kConst모드로 생성한 변수 객체들은 AllocateTo메소드가 바로 호출되지않고,  
-소스 코드상에서 해당코드의 위치를 의미하는 position값만 정해준다.  
-이 타이밍에 lef이나 const로 생성된 변수들이 TDZ(Temporal Dead Zone)구간에 들어간다.   
-(선언은 되었지만 초기화가 되지않아 공간이 메모리에 할당되지 않음)
+---
+
+## 3. Temporal Dead Zone (TDZ)
+`let`과 `const`로 선언된 변수들이 스코프의 시작 지점부터 초기화 지점까지 일시적으로 접근할 수 없는 구간을 의미합니다. 선언은 되었으나 아직 메모리 공간이 할당(초기화)되지 않은 상태입니다.
 
 ---
 
-## 1. var
-함수 레벨 스코프를 사용  
-var 키워드 생략 가능  
-호이스팅 현상을 사용할 수 있음
-변수의 중복 선언 가능
+## 4. 변수 선언 키워드 비교
 
-## 2. const / let
-const는 상수를 선언할 때 let은 변수를 선언할 때 사용되는 키워드이다.  
-키워드의 생략이 불가능 하다.
-변수의 중복 선언이 불가능 하다.  
-블록 레벨 스코프를 사용  
-블록 내부에서 호이스팅 현상이 발생한다.
+### `var`
+- **함수 레벨 스코프**: 함수 내부에서 선언된 변수만 지역 변수로 인정됩니다.
+- **중복 선언 가능**: 동일한 이름의 변수를 여러 번 선언해도 에러가 나지 않습니다.
+- **호이스팅**: 선언 전 접근 가능 (`undefined`).
+
+### `let` & `const`
+- **블록 레벨 스코프**: 모든 코드 블록(if, for, while, try/catch 등) 내에서 선언된 변수를 지역 변수로 인정합니다.
+- **중복 선언 불가능**: 이미 선언된 이름을 다시 사용할 수 없습니다.
+- **`const`**: 선언과 동시에 반드시 값을 할당해야 하며, 재할당이 불가능합니다(상수).

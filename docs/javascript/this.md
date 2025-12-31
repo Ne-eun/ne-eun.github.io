@@ -5,25 +5,30 @@ parent: Javascript
 nav_order: 1
 ---
 
-# This
-다른 언어에서 this는 생성된 오브젝트 자기 자신을 가르킨다.   
-자바스크립트에서의 this는 호출한 문맥에 따라 this가 변경된다.   
-function으로 선언한 함수는 window객체에 등록이 되고 window에서 접근이 가능하다. (window는 생략 가능)   
-const나 let으로 선언한 변수는 windwo객체에 등록되지 않는다.   
-var로 선언햔 변수는 window객체에 등록된다.   
+# this 키워드
 
-```js
-console.log(this); //this는 window
+자바스크립트에서 `this`는 함수가 **호출되는 방식**에 따라 가리키는 대상이 동적으로 결정됩니다.
+
+## 1. 전역 문맥 (Global Context)
+전역 실행 컨텍스트에서 `this`는 전역 객체를 가리킵니다.
+- 브라우저 환경: `window`
+- Node.js 환경: `global`
+
+```javascript
+console.log(this); // window (브라우저 기준)
+
 function simpleFunc() {
-	function simpleFunc2() {
-		console.log(this); 
-	}
-	simpleFunc2()
+  console.log(this); // window
 }
-window.simpleFunc(); // window에서 호출했기 떄문에 this는 window를 가르킨다. (window 생략 가능)
+simpleFunc(); // window.simpleFunc()와 동일
 ```
 
-```js
+---
+
+## 2. 메서드 호출 (Method Call)
+함수가 객체의 메서드로 호출될 때, `this`는 해당 메서드를 호출한 **객체**를 가리킵니다.
+
+```javascript
 class Counter {
   count = 0;
   increase() {
@@ -32,14 +37,33 @@ class Counter {
 }
 
 const counter = new Counter();
-counter.increase(); // counter에서 호출 했기 때문 increase안에 있는 this는 counter instance를 가르킨다. 
-const caller = counter.increase
-counter.increase() === caller() // true
-
-class Bob {}
-const bob = new Bob();
-bob.run = counter.increase; 
-bob.run(); // increase안의 this는 bob을 가르킨다.
-// 호출의 주체가 bob안에 있는 run이기 때문이다.
+counter.increase(); // this는 counter 인스턴스를 가리킴
 ```
 
+---
+
+## 3. 호출 주체에 따른 변화
+동일한 함수라도 누구에 의해 호출되느냐에 따라 `this`가 달라집니다.
+
+```javascript
+class Bob {}
+const bob = new Bob();
+
+// counter의 메서드를 bob의 속성에 할당
+bob.run = counter.increase; 
+
+bob.run(); // this는 이제 bob을 가리킴
+// 호출 주체(Caller)가 bob이기 때문입니다.
+```
+
+## 4. 선언 방식에 따른 차이 (`var` vs `let/const`)
+- **`var`**로 선언한 전역 변수는 전역 객체(`window`)의 속성이 됩니다.
+- **`let`, `const`**로 선언한 전역 변수는 전역 객체의 속성이 되지 않습니다.
+
+```javascript
+var myVar = "I am window's";
+let myLet = "I am hidden";
+
+console.log(window.myVar); // "I am window's"
+console.log(window.myLet); // undefined
+```

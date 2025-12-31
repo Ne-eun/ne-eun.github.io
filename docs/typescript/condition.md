@@ -1,64 +1,64 @@
 ---
 layout: default
-title: 상황에 따른 타입
+title: 상황에 따른 타입 (Conditional Types)
 parent: Typescript
 nav_order: 1
 ---
 
-# Condition (조건)
+# Condition (조건부 타입)
 
-## 키에 따라 다른 타입
+타입 시스템 내에서 조건에 따라 다른 타입을 결정하는 방법을 정리합니다.
 
-```ts
+## 1. Discriminated Unions (구분된 유니온)
+공통된 리터럴 타입 속성(식별자)을 사용하여 유니온 타입 내에서 타입을 안전하게 분기할 수 있습니다.
+
+```typescript
 type SuccessState = {
   result: "success";
-  response: {
-    body: string;
-  };
+  response: { body: string; };
 };
+
 type FailState = {
   result: "fail";
   reason: string;
 };
+
 type ApiState = SuccessState | FailState;
 
-function login(): ApiState {
-  return {
-    result: "fail",
-    response: {
-      body: "logged in!", // 에러: result가 fail인경우 response.body를 가질 수 없음
-    },
-  };
-}
-
-function printLoginState(state: LoginState) {
+function printLoginState(state: ApiState) {
   if (state.result === "success") {
-    // 필수key로 조건을 만들고 분기할 수 있음
-    console.log(`🎉 ${state.response.body}`);
+    // result가 success인 것이 보장되므로 response에 접근 가능
+    console.log(`🎉 성공: ${state.response.body}`);
   } else {
-    console.log(`😭 ${state.reason}`);
+    // result가 fail인 것이 보장되므로 reason에 접근 가능
+    console.log(`😭 실패: ${state.reason}`);
   }
 }
 ```
 
-## 조건문
-```ts
+---
+
+## 2. Conditional Types (조건부 타입)
+`extends` 키워드와 삼항 연산자를 사용하여 타입 간의 관계에 따라 타입을 결정합니다.
+
+```typescript
+// T가 string을 상속받으면 boolean, 아니면 number 타입이 됨
 type Check<T> = T extends string ? boolean : number;
-type Type = Check<string>; // boolean
 
-// 조건을 달아서 타입을 설정 할 수 있음
-type TypeName<T> = T extends string
-  ? "string"
-  : T extends number
-  ? "number"
-  : T extends boolean
-  ? "boolean"
-  : T extends undefined
-  ? "undefined"
-  : T extends Function
-  ? "function"
-  : "object"
+type T1 = Check<string>;  // boolean
+type T2 = Check<number>;  // number
+```
 
-type T0 = TypeName<string>  // type string
-type T2 = TypeName<() => void>  // type function
+### 활용 예시: 타입 이름 추출
+```typescript
+type TypeName<T> = 
+  T extends string ? "string" :
+  T extends number ? "number" :
+  T extends boolean ? "boolean" :
+  T extends undefined ? "undefined" :
+  T extends Function ? "function" :
+  "object";
+
+type T0 = TypeName<string>;         // "string"
+type T3 = TypeName<() => void>;     // "function"
 ```

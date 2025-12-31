@@ -1,9 +1,10 @@
 ---
 layout: default
-title: DevOps
+title: Frontend
 has_children: true
 has_toc: true
 nav_order: 2
 ---
 
-# DevOps
+# 프론트엔드 관련 메모
+
