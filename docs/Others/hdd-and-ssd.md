@@ -2,7 +2,7 @@
 layout: default
 title: SSD and HDD
 parent: Others
-nav_order: 1
+nav_order: 2
 ---
 
 ## SSD
