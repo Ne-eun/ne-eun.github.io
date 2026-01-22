@@ -5,7 +5,7 @@ theme: just-the-docs
 url: https://ne-eun.github.io
 aux_links:
   TERA's Repository: https://github.com/ne-eun
-
+mathjax: true
 callouts:
   highlight:
     color: purple
