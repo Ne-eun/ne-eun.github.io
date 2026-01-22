@@ -28,12 +28,12 @@ Precision과 Recall은 서로 반대의 관계(Trade-off)를 가짐:
 
 ## F-Score (F-Measure)
 
-### $F_{\beta}$ Score
+### β Score
 두 지표의 가중 조화평균:
 
-$$
+$$\\
 F_{\beta} = (1 + \beta^2) \cdot \frac{\text{Precision} \cdot \text{Recall}}{(\beta^2 \cdot \text{Precision}) + \text{Recall}}
-$$
+\\$$
 
 **β 값에 따른 특성**:
 - `β = 1` (F1 Score): 둘의 균형을 중시
@@ -43,21 +43,21 @@ $$
 ### F1 Score
 Precision과 Recall의 조화평균 (동일한 가중치):
 
-$$
+$$\\
 F_1 = 2 \cdot \frac{\text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}}
-$$
+\\$$
 
 ### F2 Score (재현율 강조)
 
-$$
+$$\\
 F_2 = 5 \cdot \frac{\text{Precision} \cdot \text{Recall}}{(4 \cdot \text{Precision}) + \text{Recall}}
-$$
+\\$$
 
 ### F0.5 Score (정밀도 강조)
 
-$$
+$$\\
 F_{0.5} = 1.25 \cdot \frac{\text{Precision} \cdot \text{Recall}}{(0.25 \cdot \text{Precision}) + \text{Recall}}
-$$
+\\$$
 
 ---
 
@@ -82,6 +82,6 @@ $$
   1. 답변을 원자적 주장(atomic claims)으로 분해
   2. 쪼개진 주장이 컨텍스트에 근거하는지 체크
   
-$$
+$$\\
 \text{Faithfulness} = \frac{\text{의미있는 주장의 수}}{\text{전체 주장 수}}
-$$
+\\$$
