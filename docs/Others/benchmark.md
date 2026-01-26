@@ -2,7 +2,7 @@
 layout: default
 title: Benchmark
 parent: Others
-usemathjax: true
+mathjax: true
 nav_order: 2
 has_children: true
 has_toc: true
